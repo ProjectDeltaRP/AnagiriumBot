@@ -10,7 +10,7 @@ intents.message_content = True
 intents.members = True
 
 bot = commands.Bot(
-    command_prefix="+an",
+    command_prefix="!",
     help_command=None,
     intents=intents
 )
