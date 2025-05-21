@@ -29,7 +29,9 @@ def get_env_variable(name: str, default: str = "NULL") -> str:
 DISCORD_TOKEN = get_env_variable("DISCORD_TOKEN")
 
 LOG_TECH_CHANNEL = 1374529148474622085  # ID канала с логами
-GUILD_ID = 1374389368315449477  # ID Discord сервера
+BACKUP_CHANNEL_ID = 1374736085929820191 # ID канала для сохранения настроек в случае отключения
+GUILD_ID = 1374389368315449477          # ID Discord сервера
+SHUTDOWN_TIMER = 60 #5 * 60 * 60 + 56
 
 # Айди пользователей с полными правами ко всем командам бота
 FULL_PERMISSION = [328502766622474240, 375256003723132938]
