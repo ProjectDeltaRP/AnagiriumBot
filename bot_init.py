@@ -12,5 +12,6 @@ intents.members = True
 bot = commands.Bot(
     command_prefix="!",
     help_command=None,
-    intents=intents
+    intents=intents,
+    sync_commands=True
 )
