@@ -3,8 +3,8 @@
 """
 
 from bot_init import bot
-from config import DISCORD_TOKEN
 from commands import general_commands
+from config import DISCORD_TOKEN
 from events import on_ready
 
 

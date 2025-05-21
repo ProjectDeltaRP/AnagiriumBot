@@ -1,6 +1,7 @@
 from disnake.ext import commands
 
-from config import FULL_PERMISSION, ROLE_WHITELISTS, GUILD_ID
+from config import FULL_PERMISSION, GUILD_ID, ROLE_WHITELISTS
+
 
 def has_any_role_by_keys(*whitelist_keys):
     """

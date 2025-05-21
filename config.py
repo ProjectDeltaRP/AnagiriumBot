@@ -3,6 +3,7 @@
 """
 
 import os
+
 from dotenv import load_dotenv
 
 # Загрузка переменных из .env
@@ -24,8 +25,8 @@ def get_env_variable(name: str, default: str = "NULL") -> str:
 # Получение переменных из окружения
 DISCORD_TOKEN = get_env_variable("DISCORD_TOKEN")
 
-
-GUILD_ID = 1374389368315449477  # ID Discord сервера
+LOG_TECH_CHANNEL = 1374529148474622085  # ID канала с логами
+GUILD_ID = 1374389368315449477          # ID Discord сервера
 
 # Айди пользователей с полными правами ко всем командам бота
 FULL_PERMISSION = [328502766622474240, 375256003723132938]
