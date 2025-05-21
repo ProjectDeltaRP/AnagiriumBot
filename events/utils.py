@@ -8,7 +8,7 @@ from bot_init import bot
 async def send_console_style_log(channel: TextChannel):
     """Отправляет стилизованное сообщение о запуске в лог-канал"""
     current_time = datetime.now().strftime("%d/%m/%Y %H:%M")
-    
+
     ascii_art = f"""
 ```diff
 +-----------------------------------------------------+
@@ -37,4 +37,4 @@ async def get_guild_status() -> str:
     if len(guilds) > 3:
         status.append(f"|  ...and {len(guilds)-3} more servers")
 
-    return '\n'.join(status)
+    return "\n".join(status)

@@ -9,6 +9,7 @@ def has_any_role_by_keys(*whitelist_keys):
     Если пользователь — есть в FULL_PERMISSION, доступ разрешён всегда.
     При отказе выводятся названия нужных ролей без пинга.
     """
+
     async def predicate(ctx):
         if ctx.author.id in FULL_PERMISSION:
             return True
@@ -34,7 +35,9 @@ def has_any_role_by_keys(*whitelist_keys):
 
             if role_names:
                 formatted_roles = ", ".join(f"`{name}`" for name in role_names)
-                await ctx.send(f"❌ У вас нет доступа к этой команде.\nТребуемые роли: {formatted_roles}")
+                await ctx.send(
+                    f"❌ У вас нет доступа к этой команде.\nТребуемые роли: {formatted_roles}"
+                )
             else:
                 await ctx.send("❌ У вас нет доступа к этой команде. (Роли не найдены)")
         else:

@@ -10,10 +10,11 @@ async def on_ready():
     """
     guild_names = [guild.name for guild in bot.guilds]
     print("✅ Connected to Discord successfully.")
-    print(f"✅ Guilds: {guild_names}")  # Выводит список серверов, к которым подключен бот.
+    print(
+        f"✅ Guilds: {guild_names}"
+    )  # Выводит список серверов, к которым подключен бот.
     print(f"✅ Bot {bot.user.name} (ID: {bot.user.id}) is ready to work!")
-    
-    
+
     # Логирование запуска бота в канал
     log_channel = bot.get_channel(LOG_TECH_CHANNEL)
     if not log_channel:

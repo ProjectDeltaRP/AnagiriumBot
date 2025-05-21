@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 # Загрузка переменных из .env
 load_dotenv()
 
+
 def get_env_variable(name: str, default: str = "NULL") -> str:
     """
     Функция для безопасного получения переменных окружения.
@@ -16,17 +17,19 @@ def get_env_variable(name: str, default: str = "NULL") -> str:
     """
     value = os.getenv(name)
     if not value:
-        print(f"Предупреждение: {name} не найден в файле .env. "
-              f"Используется значение по умолчанию: {default}"
+        print(
+            f"Предупреждение: {name} не найден в файле .env. "
+            f"Используется значение по умолчанию: {default}"
         )
         return default
     return value
+
 
 # Получение переменных из окружения
 DISCORD_TOKEN = get_env_variable("DISCORD_TOKEN")
 
 LOG_TECH_CHANNEL = 1374529148474622085  # ID канала с логами
-GUILD_ID = 1374389368315449477          # ID Discord сервера
+GUILD_ID = 1374389368315449477  # ID Discord сервера
 
 # Айди пользователей с полными правами ко всем командам бота
 FULL_PERMISSION = [328502766622474240, 375256003723132938]
@@ -46,5 +49,5 @@ ROLE_WHITELISTS = {
         1054827766211694593,
         1127152229439246468,
         1266161300036390913,
-    ]
+    ],
 }
