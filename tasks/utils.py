@@ -10,7 +10,7 @@ DATA_MESSAGE_PREFIX = "[PRIVATE_CHANNELS_BACKUP]"
 async def save_private_channels():
     backup_channel = bot.get_channel(BACKUP_CHANNEL_ID)
     if not backup_channel:
-        print("Канал логов не найден!")
+        print("Канал бэкапа не найден!")
         return
 
     # Удаляем старые сообщения с бэкапом
@@ -27,7 +27,7 @@ async def save_private_channels():
 async def restore_private_channels():
     backup_channel = bot.get_channel(BACKUP_CHANNEL_ID)
     if not backup_channel:
-        print("Канал логов не найден!")
+        print("Канал бэкапа не найден!")
         return
 
     async for msg in backup_channel.history(limit=50):
