@@ -2,7 +2,7 @@ from bot_init import bot
 from config import LOG_TECH_CHANNEL
 from events.utils import send_console_style_log
 from tasks.shutdown_timer import shutdown_timer
-from tasks.utils import restore_private_channels
+from tasks.utils import restore_data
 
 
 async def start_task_if_not_running(task, task_name: str):
@@ -30,7 +30,7 @@ async def on_ready():
 
 
     # Запуск восстановления данных
-    await restore_private_channels()
+    await restore_data()
 
 
     # Логирование запуска бота в канал

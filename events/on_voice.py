@@ -3,14 +3,8 @@ import disnake
 
 import data
 from bot_init import bot
+from tasks.utils import save_data
 
-ENTRY_CHANNELS = {
-    1374481957710467143: "СБ",
-    1374484072528609330: "АС",
-    1374484348123877436: "МС",
-    1374484217529897106: "НС",
-    # и т.д.
-}
 
 @bot.event
 async def on_voice_state_update(member, before, after):
@@ -18,7 +12,8 @@ async def on_voice_state_update(member, before, after):
     if before.channel == after.channel:
         return
 
-    if after.channel and after.channel.id in ENTRY_CHANNELS:
+    # Используем данные из data.trigger_channels
+    if after.channel and after.channel.id in data.trigger_channels:
         guild = member.guild
         category = after.channel.category
 
@@ -29,7 +24,7 @@ async def on_voice_state_update(member, before, after):
         }
 
         freq = f"{random.randint(60, 110)}.{random.randint(0, 9)}"
-        tag = ENTRY_CHANNELS[after.channel.id]
+        tag = data.trigger_channels[after.channel.id]
         channel = await guild.create_voice_channel(
             name=f"Частота {tag}-{freq}: {member.display_name}",
             category=category,
@@ -39,12 +34,11 @@ async def on_voice_state_update(member, before, after):
 
         data.private_channels[str(member.id)] = channel.id
         await member.move_to(channel)
+        await save_data()  # Сохраняем после создания канала
 
         # Отправляем инструкцию в текстовый канал с таким же ID, как у голосового
         text_channel = guild.get_channel(after.channel.id)
         if text_channel is None:
-            # Если текстового канала с таким ID нет,
-            # можно отправить в первый доступный текстовый канал категории
             text_channel = None
             if category:
                 for ch in category.channels:
@@ -79,4 +73,5 @@ async def on_voice_state_update(member, before, after):
                 k: v for k, v in data.private_channels.items()
                 if v != before.channel.id
             }
+            await save_data()  # Сохраняем после удаления
             print("Канал удалён, словарь обновлён")

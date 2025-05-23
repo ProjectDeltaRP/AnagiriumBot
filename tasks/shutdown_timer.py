@@ -7,11 +7,11 @@ from disnake.ext import tasks
 from bot_init import bot
 from config import LOG_TECH_CHANNEL, SHUTDOWN_TIMER
 from events.utils import get_guild_status
-from tasks.utils import save_private_channels
+from tasks.utils import save_data
 
 
 async def shutdown_procces():
-    await save_private_channels()
+    await save_data()
     # Получаем канал для логов
     log_channel = bot.get_channel(LOG_TECH_CHANNEL)
     if log_channel:
