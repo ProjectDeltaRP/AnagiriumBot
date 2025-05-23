@@ -1,5 +1,6 @@
 from bot_init import bot
 from config import GUILD_ID, LOG_TECH_CHANNEL
+from modules.check_workflows import check_workflows
 from modules.utils_data import restore_data
 from modules.utils_general import (cleanup_empty_voice_channels,
                                    send_console_style_log)
@@ -28,6 +29,10 @@ async def on_ready():
         f"✅ Guilds: {guild_names}"
     )  # Выводит список серверов, к которым подключен бот.
     print(f"✅ Bot {bot.user.name} (ID: {bot.user.id}) is ready to work!")
+    
+    # Проверка workflows на случай повторного запуска на GitHub Actions
+    await check_workflows()  # Завершает работу,
+                             # если бот уже запущен на GitHub Actions
 
     # Логирование запуска бота в канал
     log_channel = bot.get_channel(LOG_TECH_CHANNEL)
