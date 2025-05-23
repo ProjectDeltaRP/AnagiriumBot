@@ -1,5 +1,6 @@
 from disnake.ext import commands
 
+import data
 from config import FULL_PERMISSION_USERS, GUILD_ID, ROLE_WHITELISTS
 
 
@@ -46,3 +47,9 @@ def has_any_role_by_keys(*whitelist_keys):
         return False
 
     return commands.check(predicate)
+
+def get_user_private_channel(user):
+    if user.voice and user.voice.channel and user.voice.channel.id in data.private_channels.values():
+        if data.private_channels.get(str(user.id)) == user.voice.channel.id:
+            return user.voice.channel
+    return None

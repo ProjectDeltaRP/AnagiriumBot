@@ -3,8 +3,9 @@ from disnake.ext import commands
 
 import data
 from bot_init import bot
-from commands.utils import has_any_role_by_keys
+from commands.utils import get_user_private_channel, has_any_role_by_keys
 from events.on_slash_command import log_slash_command
+from modules.modal_window_voice import ChannelOptionsView
 from modules.utils_data import save_data
 
 
@@ -63,13 +64,6 @@ async def list_trigger_channels(interaction):
     for ch_id, tag in data.trigger_channels.items():
         msg += f"- <#{ch_id}> с тегом '{tag}'\n"
     await interaction.response.send_message(msg)
-
-
-def get_user_private_channel(user):
-    if user.voice and user.voice.channel and user.voice.channel.id in data.private_channels.values():
-        if data.private_channels.get(str(user.id)) == user.voice.channel.id:
-            return user.voice.channel
-    return None
 
 
 @bot.slash_command(name="name", description="Изменить имя голосового канала.")
@@ -157,3 +151,12 @@ async def reject_user(interaction, member: Member):
         await interaction.response.send_message(f"⛔ {member.mention} удалён из канала и доступ закрыт.", ephemeral=True)
     else:
         await interaction.response.send_message("❌ Вы не в своем приватном канале.", ephemeral=True)
+
+
+@bot.slash_command(name="settings", description="Меню управления приватным каналом")
+async def open_settings_menu(interaction):
+    await interaction.response.send_message(
+        "⚙️ Меню управления каналом:",
+        view=ChannelOptionsView(bot, interaction.author),
+        ephemeral=True
+    )
