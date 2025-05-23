@@ -1,17 +1,17 @@
 from disnake.ext import commands
 
-from config import FULL_PERMISSION, GUILD_ID, ROLE_WHITELISTS
+from config import FULL_PERMISSION_USERS, GUILD_ID, ROLE_WHITELISTS
 
 
 def has_any_role_by_keys(*whitelist_keys):
     """
     Декоратор для проверки, имеет ли пользователь одну из указанных ролей по ключам.
-    Если пользователь — есть в FULL_PERMISSION, доступ разрешён всегда.
+    Если пользователь — есть в FULL_PERMISSION_USERS, доступ разрешён всегда.
     При отказе выводятся названия нужных ролей без пинга.
     """
 
     async def predicate(ctx):
-        if ctx.author.id in FULL_PERMISSION:
+        if ctx.author.id in FULL_PERMISSION_USERS:
             return True
 
         user_role_ids = [role.id for role in ctx.author.roles]

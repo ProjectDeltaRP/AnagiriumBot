@@ -1,4 +1,5 @@
 import asyncio
+import sys
 from datetime import datetime
 
 from disnake.ext import tasks
@@ -39,3 +40,4 @@ async def shutdown_timer():
         await log_channel.send(ascii_art)
 
     await bot.close()
+    sys.exit(0)
