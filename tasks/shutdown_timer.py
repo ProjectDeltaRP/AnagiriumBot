@@ -10,12 +10,8 @@ from events.utils import get_guild_status
 from tasks.utils import save_private_channels
 
 
-@tasks.loop(count=1)
-async def shutdown_timer():
-    await asyncio.sleep(SHUTDOWN_TIMER)
+async def shutdown_procces():
     await save_private_channels()
-    
-    
     # Получаем канал для логов
     log_channel = bot.get_channel(LOG_TECH_CHANNEL)
     if log_channel:
@@ -41,3 +37,9 @@ async def shutdown_timer():
 
     await bot.close()
     sys.exit(0)
+    
+
+@tasks.loop(count=1)
+async def shutdown_timer():
+    await asyncio.sleep(SHUTDOWN_TIMER)
+    await shutdown_procces()

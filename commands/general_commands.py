@@ -14,7 +14,7 @@ from disnake import AppCommandInteraction, Embed
 
 from bot_init import bot
 from config import FULL_PERMISSION_USERS
-from tasks.shutdown_timer import shutdown_timer
+from tasks.shutdown_timer import shutdown_procces
 
 
 @bot.slash_command(name="help", description="Показать список доступных команд.")
@@ -95,7 +95,7 @@ async def shutdown(interaction: AppCommandInteraction):
         await message.edit(content=content + "```")
 
     await asyncio.sleep(1)
-    await shutdown_timer()
+    await shutdown_procces()
     await bot.close()
     sys.exit(0)
 
