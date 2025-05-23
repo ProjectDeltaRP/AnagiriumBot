@@ -4,6 +4,7 @@ from modules.check_workflows import check_workflows
 from modules.utils_data import restore_data
 from modules.utils_general import (cleanup_empty_voice_channels,
                                    send_console_style_log)
+from tasks.check_new_commit import monitor_commits
 from tasks.shutdown_timer import shutdown_timer
 
 
@@ -29,10 +30,12 @@ async def on_ready():
         f"✅ Guilds: {guild_names}"
     )  # Выводит список серверов, к которым подключен бот.
     print(f"✅ Bot {bot.user.name} (ID: {bot.user.id}) is ready to work!")
-    
+
+
     # Проверка workflows на случай повторного запуска на GitHub Actions
     await check_workflows()  # Завершает работу,
                              # если бот уже запущен на GitHub Actions
+
 
     # Логирование запуска бота в канал
     log_channel = bot.get_channel(LOG_TECH_CHANNEL)
@@ -51,17 +54,15 @@ async def on_ready():
     # Запуск очистки пустых каналов
     await cleanup_empty_voice_channels(bot, GUILD_ID)
 
-    # Запуск всех фоновых задач
-    # tasks_to_start = [
-    #     (fetch_merged_pull_requests, "fetch merged pr"),
 
-    # ]
-    
+    # Запуск всех фоновых задач
+    tasks_to_start = [
+        (monitor_commits, "Monitor Commits"),
+    ]
     # Для дебага
     # tasks_to_start = []
-
-    # for task, name in tasks_to_start:
-    #     await start_task_if_not_running(task, name)
+    for task, name in tasks_to_start:
+        await start_task_if_not_running(task, name)
 
 
     # Запускаем таймер отключения через 6 часов
