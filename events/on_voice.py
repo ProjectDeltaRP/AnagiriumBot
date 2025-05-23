@@ -4,7 +4,7 @@ import disnake
 
 import data
 from bot_init import bot
-from tasks.utils import save_data
+from modules.utils_data import save_data
 
 
 @bot.event

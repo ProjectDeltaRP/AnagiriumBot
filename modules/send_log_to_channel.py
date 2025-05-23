@@ -1,6 +1,8 @@
 import traceback
+
 from disnake import Client, Embed, TextChannel
 from disnake.abc import User
+
 from config import LOG_TECH_CHANNEL
 
 

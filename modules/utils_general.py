@@ -5,7 +5,7 @@ from disnake import TextChannel, VoiceChannel
 import data
 from bot_init import bot
 from modules.send_log_to_channel import log_to_channel
-from tasks.utils import save_data
+from modules.utils_data import save_data
 
 
 async def send_console_style_log(channel: TextChannel):

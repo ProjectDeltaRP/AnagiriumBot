@@ -3,7 +3,7 @@ from disnake import VoiceChannel
 import data
 from bot_init import bot
 from commands.utils import has_any_role_by_keys
-from tasks.utils import save_data
+from modules.utils_data import save_data
 
 
 @bot.slash_command(name="lock", description="Закрыть канал для других")

@@ -6,8 +6,8 @@ from disnake.ext import tasks
 
 from bot_init import bot
 from config import LOG_TECH_CHANNEL, SHUTDOWN_TIMER
-from events.utils import get_guild_status
-from tasks.utils import save_data
+from modules.utils_data import save_data
+from modules.utils_general import get_guild_status
 
 
 async def shutdown_procces():

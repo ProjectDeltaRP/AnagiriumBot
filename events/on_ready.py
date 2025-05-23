@@ -1,8 +1,9 @@
 from bot_init import bot
-from config import LOG_TECH_CHANNEL, GUILD_ID
-from events.utils import send_console_style_log, cleanup_empty_voice_channels
+from config import GUILD_ID, LOG_TECH_CHANNEL
+from modules.utils_data import restore_data
+from modules.utils_general import (cleanup_empty_voice_channels,
+                                   send_console_style_log)
 from tasks.shutdown_timer import shutdown_timer
-from tasks.utils import restore_data
 
 
 async def start_task_if_not_running(task, task_name: str):
