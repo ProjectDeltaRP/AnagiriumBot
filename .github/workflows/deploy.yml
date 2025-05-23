@@ -28,6 +28,7 @@ jobs:
       - name: Load Environment Variables
         run: |
           echo "DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }}" >> $GITHUB_ENV
+          echo "GIT_PAT_TOKEN=${{ secrets.GIT_PAT_TOKEN }}" >> $GITHUB_ENV
 
       - name: Run bot
         env:
