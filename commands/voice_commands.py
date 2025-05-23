@@ -42,6 +42,7 @@ async def add_trigger_channel(interaction, channel: VoiceChannel, tag: str):
 # Слэш-команда для удаления триггер-канала
 @bot.slash_command(description="Удалить триггер-канал")
 @log_slash_command
+@has_any_role_by_keys("head_project")
 async def remove_trigger_channel(interaction, channel: VoiceChannel):
     if channel.id in data.trigger_channels:
         del data.trigger_channels[channel.id]
