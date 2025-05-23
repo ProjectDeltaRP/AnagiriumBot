@@ -1,4 +1,5 @@
 import json
+
 import data
 from bot_init import bot
 from config import BACKUP_CHANNEL_ID
@@ -11,21 +12,34 @@ async def save_data():
         print("Канал бэкапа не найден!")
         return
 
-    # Удаляем старые сообщения с бэкапом
+    # Ищем существующее сообщение с бэкапом
+    backup_message = None
     async for msg in backup_channel.history(limit=50):
         if msg.content.startswith(DATA_MESSAGE_PREFIX):
-            try:
-                await msg.delete()
-            except Exception as e:
-                print(f"Ошибка удаления сообщения бэкапа: {e}")
+            backup_message = msg
+            break
 
+    # Формируем новые данные
     data_to_save = {
         "private_channels": data.private_channels,
         "trigger_channels": data.trigger_channels
     }
-    data_json = json.dumps(data_to_save, ensure_ascii=False)
-    await backup_channel.send(f"{DATA_MESSAGE_PREFIX}```json\n{data_json}\n```")
-    print("Сохранены данные о приватных и триггер-каналах.")
+    data_json = json.dumps(data_to_save, ensure_ascii=False, indent=2)
+    content = f"{DATA_MESSAGE_PREFIX}```json\n{data_json}\n```"
+
+    # Обновляем или создаём новое сообщение
+    if backup_message:
+        try:
+            await backup_message.edit(content=content)
+            print("Бэкап данных успешно обновлён.")
+        except Exception as e:
+            print(f"Ошибка при редактировании бэкапа: {e}")
+    else:
+        try:
+            await backup_channel.send(content)
+            print("Создано новое сообщение бэкапа.")
+        except Exception as e:
+            print(f"Ошибка при отправке нового сообщения бэкапа: {e}")
 
 
 async def restore_data():

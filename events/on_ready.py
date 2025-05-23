@@ -1,6 +1,6 @@
 from bot_init import bot
-from config import LOG_TECH_CHANNEL
-from events.utils import send_console_style_log
+from config import LOG_TECH_CHANNEL, GUILD_ID
+from events.utils import send_console_style_log, cleanup_empty_voice_channels
 from tasks.shutdown_timer import shutdown_timer
 from tasks.utils import restore_data
 
@@ -28,11 +28,6 @@ async def on_ready():
     )  # Выводит список серверов, к которым подключен бот.
     print(f"✅ Bot {bot.user.name} (ID: {bot.user.id}) is ready to work!")
 
-
-    # Запуск восстановления данных
-    await restore_data()
-
-
     # Логирование запуска бота в канал
     log_channel = bot.get_channel(LOG_TECH_CHANNEL)
     if not log_channel:
@@ -44,6 +39,11 @@ async def on_ready():
     except Exception as e:
         print(f"❌ Failed to send log: {e}")
 
+
+    # Запуск восстановления данных
+    await restore_data()
+    # Запуск очистки пустых каналов
+    await cleanup_empty_voice_channels(bot, GUILD_ID)
 
     # Запуск всех фоновых задач
     # tasks_to_start = [
