@@ -1,6 +1,9 @@
 import traceback
-from disnake import Client, User, TextChannel, Embed
+
+from disnake import Client, Embed, TextChannel, User
+
 from config import LOG_TECH_CHANNEL
+
 
 async def log_to_channel(bot: Client, message: str, *,
                          title: str = "Лог",

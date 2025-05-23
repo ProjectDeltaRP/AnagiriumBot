@@ -19,7 +19,7 @@ async def on_voice_state_update(member, before, after):
         category = after.channel.category
 
         overwrites = {
-            guild.default_role: disnake.PermissionOverwrite(view_channel=False),
+            guild.default_role: disnake.PermissionOverwrite(view_channel=True, connect=True),  # открыт для всех
             member: disnake.PermissionOverwrite(view_channel=True, connect=True, manage_channels=True),
             guild.me: disnake.PermissionOverwrite(view_channel=True)
         }
