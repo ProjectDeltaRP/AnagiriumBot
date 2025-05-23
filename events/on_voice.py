@@ -1,5 +1,4 @@
 import random
-
 import disnake
 
 import data
@@ -40,6 +39,36 @@ async def on_voice_state_update(member, before, after):
 
         data.private_channels[str(member.id)] = channel.id
         await member.move_to(channel)
+
+        # Отправляем инструкцию в текстовый канал с таким же ID, как у голосового
+        text_channel = guild.get_channel(after.channel.id)
+        if text_channel is None:
+            # Если текстового канала с таким ID нет,
+            # можно отправить в первый доступный текстовый канал категории
+            text_channel = None
+            if category:
+                for ch in category.channels:
+                    if isinstance(ch, disnake.TextChannel):
+                        text_channel = ch
+                        break
+
+        if text_channel:
+            embed = disnake.Embed(
+                title="🎙 Управление приватным голосовым каналом",
+                description=(
+                    f"Привет, {member.mention}! Это твой приватный голосовой канал.\n\n"
+                    "🔹 **Как управлять каналом:**\n"
+                    "• Используй права **Управление каналом**, чтобы настроить доступ.\n"
+                    "• Чтобы покинуть канал — просто выйди из него.\n"
+                    "• Канал удалится автоматически, когда все уйдут.\n\n"
+                    "Если нужна помощь — обратись к администрации."
+                ),
+                color=0x2f3136,
+                timestamp=disnake.utils.utcnow()
+            )
+            embed.set_footer(text="Автоматически созданный канал")
+
+            await text_channel.send(embed=embed)
 
     # Удаление пустых приватных каналов
     if before.channel and before.channel.id in data.private_channels.values():
