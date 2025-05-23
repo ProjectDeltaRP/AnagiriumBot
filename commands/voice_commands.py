@@ -3,10 +3,12 @@ from disnake import VoiceChannel
 import data
 from bot_init import bot
 from commands.utils import has_any_role_by_keys
+from events.on_slash_command import log_slash_command
 from modules.utils_data import save_data
 
 
 @bot.slash_command(name="lock", description="Закрыть канал для других")
+@log_slash_command
 async def lock_channel(ctx):
     if ctx.author.voice and ctx.author.voice.channel.id in data.private_channels.values():
         channel = ctx.author.voice.channel
@@ -16,6 +18,7 @@ async def lock_channel(ctx):
         await ctx.send("Вы не в своем приватном канале!", ephemeral=True)
 
 @bot.slash_command(name="unlock", description="Открыть канал для других")
+@log_slash_command
 async def unlock_channel(ctx):
     if ctx.author.voice and ctx.author.voice.channel.id in data.private_channels.values():
         channel = ctx.author.voice.channel
@@ -26,6 +29,7 @@ async def unlock_channel(ctx):
 
 # Слэш-команда для добавления триггер-канала
 @bot.slash_command(description="Добавить триггер-канал для создания приватных каналов")
+@log_slash_command
 @has_any_role_by_keys("head_project")
 async def add_trigger_channel(inter, channel: VoiceChannel, tag: str):
     data.trigger_channels[channel.id] = tag
@@ -35,7 +39,7 @@ async def add_trigger_channel(inter, channel: VoiceChannel, tag: str):
 
 # Слэш-команда для удаления триггер-канала
 @bot.slash_command(description="Удалить триггер-канал")
-
+@log_slash_command
 async def remove_trigger_channel(inter, channel: VoiceChannel):
     if channel.id in data.trigger_channels:
         del data.trigger_channels[channel.id]
@@ -47,6 +51,7 @@ async def remove_trigger_channel(inter, channel: VoiceChannel):
 
 # Можно командой вывести список триггер-каналов
 @bot.slash_command(description="Показать список триггер-каналов")
+@log_slash_command
 async def list_trigger_channels(inter):
     if not data.trigger_channels:
         await inter.response.send_message("Триггер-каналы не настроены.")

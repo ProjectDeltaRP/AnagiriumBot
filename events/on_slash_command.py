@@ -4,7 +4,7 @@ import functools
 from disnake import AppCommandInteraction, Embed
 
 from bot_init import bot
-from config import LOG_TECH_CHANNEL
+from modules.send_log_to_channel import log_to_channel
 
 
 def log_slash_command(func):
@@ -18,34 +18,27 @@ def log_slash_command(func):
         except Exception:
             message_url = f"https://discord.com/channels/{interaction.guild_id}/{interaction.channel_id}"
 
-        log_channel = bot.get_channel(LOG_TECH_CHANNEL)
-        if log_channel is None:
-            try:
-                log_channel = await bot.fetch_channel(LOG_TECH_CHANNEL)
-            except Exception:
-                log_channel = None
+        user = interaction.user
+        guild = interaction.guild
+        command_name = interaction.application_command.name
+        options = interaction.data.get("options", [])
 
-        if log_channel:
-            user = interaction.user
-            guild = interaction.guild
-            command_name = interaction.application_command.name
-            options = interaction.data.get("options", [])
+        args_str = ", ".join(f"{opt['name']}={opt['value']}" for opt in options) or "без аргументов"
 
-            args_str = ", ".join(f"{opt['name']}={opt['value']}" for opt in options) or "без аргументов"
+        embed = Embed(
+            title=f"Команда: /{command_name}",
+            color=0x2f3136,
+            timestamp=interaction.created_at,
+        )
+        embed.description = (
+            f"👤 {user} (`{user.id}`)\n"
+            f"📁 {guild.name if guild else 'DM'} / {interaction.channel.name if interaction.channel else 'N/A'}\n"
+            f"📝 Аргументы: {args_str}\n"
+            f"[Перейти к сообщению]({message_url})"
+        )
 
-            embed = Embed(
-                title=f"Команда: /{command_name}",
-                color=0x2f3136,
-                timestamp=interaction.created_at,
-            )
-            embed.description = (
-                f"👤 {user} (`{user.id}`)\n"
-                f"📁 {guild.name if guild else 'DM'} / {interaction.channel.name if interaction.channel else 'N/A'}\n"
-                f"📝 Аргументы: {args_str}\n"
-                f"[Перейти к сообщению]({message_url})"
-            )
-
-            asyncio.create_task(log_channel.send(embed=embed))
+        # Просто вызываем логирование — message передаём пустую строку, embed_obj — наш эмбед
+        asyncio.create_task(log_to_channel(bot=bot, message="", embed_obj=embed, title="slash_command"))
 
         return result
     return wrapper

@@ -79,7 +79,6 @@ async def ping_command(interaction: AppCommandInteraction):
 
 
 @bot.slash_command(name="shutdown", description="Аварийное отключение ядра ANAGIRIUM.")
-@log_slash_command
 async def shutdown(interaction: AppCommandInteraction):
     if interaction.author.id not in FULL_PERMISSION_USERS:
         await interaction.response.send_message(
@@ -106,8 +105,6 @@ async def shutdown(interaction: AppCommandInteraction):
 
     await asyncio.sleep(1)
     await shutdown_procces()
-    await bot.close()
-    sys.exit(0)
 
 
 @bot.slash_command(name="systeminfo", description="Выводит информацию о системе в SCP-консольном стиле.")
