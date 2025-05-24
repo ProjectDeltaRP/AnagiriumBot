@@ -65,9 +65,10 @@ AnagiriumBot — это кастомный Discord-бот, разработан�
 AnagiriumBot/
 ├── main.py                   # Точка входа
 ├── config.py / .env          # Конфигурация
-├── events/
+├── tasks/                    # Периодические или запускаемые вручную задачи
+├── events/                   # Обраьотка ивентов
 │   └── on_ready.py           # Обработка запуска
-├── modules/
+├── modules/                  # Общие вспомогательные модули
 │   └── check_workflows.py    # GitHub workflow проверка
 ├── commands/                 # Пользовательские команды
 │   └── voice_management.py   # Команды управления голосом
