@@ -66,7 +66,7 @@ AnagiriumBot/
 ├── main.py                   # Точка входа
 ├── config.py / .env          # Конфигурация
 ├── tasks/                    # Периодические или запускаемые вручную задачи
-├── events/                   # Обраьотка ивентов
+├── events/                   # Обработка ивентов
 │   └── on_ready.py           # Обработка запуска
 ├── modules/                  # Общие вспомогательные модули
 │   └── check_workflows.py    # GitHub workflow проверка
