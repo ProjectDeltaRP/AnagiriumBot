@@ -14,13 +14,26 @@ async def on_voice_state_update(member, before, after):
     if before.channel == after.channel:
         return
 
-    # Используем данные из data.trigger_channels
+    guild = member.guild
+
+    # === Удаление пустого старого канала, если это приватный ===
+    if before.channel and before.channel.id in data.private_channels.values():
+        if len(before.channel.members) == 0:
+            print(f"Удаляю канал {before.channel.name} (ID {before.channel.id}) — пустой")
+            await before.channel.delete()
+            data.private_channels = {
+                k: v for k, v in data.private_channels.items()
+                if v != before.channel.id
+            }
+            await save_data()
+            print("Канал удалён, словарь обновлён")
+
+    # === Создание нового приватного канала, если вошёл в триггерный ===
     if after.channel and after.channel.id in data.trigger_channels:
-        guild = member.guild
         category = after.channel.category
 
         overwrites = {
-            guild.default_role: disnake.PermissionOverwrite(view_channel=True, connect=True),  # открыт для всех
+            guild.default_role: disnake.PermissionOverwrite(view_channel=True, connect=True),
             member: disnake.PermissionOverwrite(view_channel=True, connect=True, manage_channels=True),
             guild.me: disnake.PermissionOverwrite(view_channel=True)
         }
@@ -36,17 +49,15 @@ async def on_voice_state_update(member, before, after):
 
         data.private_channels[str(member.id)] = channel.id
         await member.move_to(channel)
-        await save_data()  # Сохраняем после создания канала
+        await save_data()
 
-        # Отправляем инструкцию в текстовый канал с таким же ID, как у голосового
+        # Находим текстовый канал для инструкции
         text_channel = guild.get_channel(after.channel.id)
-        if text_channel is None:
-            text_channel = None
-            if category:
-                for ch in category.channels:
-                    if isinstance(ch, disnake.TextChannel):
-                        text_channel = ch
-                        break
+        if not text_channel and category:
+            for ch in category.channels:
+                if isinstance(ch, disnake.TextChannel):
+                    text_channel = ch
+                    break
 
         if text_channel:
             embed = disnake.Embed(
@@ -64,19 +75,5 @@ async def on_voice_state_update(member, before, after):
             )
             embed.set_footer(text="Автоматически созданный канал")
 
-            # 👇 передаём bot и member для корректной работы ChannelOptionsView
             view = ChannelOptionsView(bot, member)
             await text_channel.send(embed=embed, view=view)
-
-
-    # Удаление пустых приватных каналов
-    if before.channel and before.channel.id in data.private_channels.values():
-        if len(before.channel.members) == 0:
-            print(f"Удаляю канал {before.channel.name} (ID {before.channel.id}) — пустой")
-            await before.channel.delete()
-            data.private_channels = {
-                k: v for k, v in data.private_channels.items()
-                if v != before.channel.id
-            }
-            await save_data()  # Сохраняем после удаления
-            print("Канал удалён, словарь обновлён")
