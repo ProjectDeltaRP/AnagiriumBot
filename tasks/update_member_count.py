@@ -37,10 +37,10 @@ async def update_member_count():
 
         # Обновляем названия каналов
         if online_channel and isinstance(online_channel, disnake.VoiceChannel):
-            await online_channel.edit(name=f"Online Members: {formatted_online}")
+            await online_channel.edit(name=f"Участников онлайн: {formatted_online}")
         
         if total_channel and isinstance(total_channel, disnake.VoiceChannel):
-            await total_channel.edit(name=f"All humans: {formatted_total}")
+            await total_channel.edit(name=f"Всего участников: {formatted_total}")
 
     except Exception as e:
         print(f"Error updating member count: {e}")
