@@ -6,6 +6,7 @@ from modules.utils_general import (cleanup_empty_voice_channels,
                                    send_console_style_log)
 from tasks.check_new_commit import monitor_commits
 from tasks.shutdown_timer import shutdown_timer
+from tasks.update_member_count import update_member_count
 
 
 async def start_task_if_not_running(task, task_name: str):
@@ -58,6 +59,7 @@ async def on_ready():
     # Запуск всех фоновых задач
     tasks_to_start = [
         (monitor_commits, "Monitor Commits"),
+        (update_member_count, "Update Member Count"),
     ]
     # Для дебага
     # tasks_to_start = []
