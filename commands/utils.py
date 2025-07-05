@@ -1,7 +1,9 @@
+from disnake import Member, TextChannel
 from disnake.ext import commands
 
 import data
-from config import FULL_PERMISSION_USERS, GUILD_ID, ROLE_WHITELISTS
+from config import (DEPARTMENT_ROLES, FULL_PERMISSION_USERS, GUILD_ID,
+                    ROLE_WHITELISTS)
 
 
 def has_any_role_by_keys(*whitelist_keys):
@@ -53,3 +55,64 @@ def get_user_private_channel(user):
         if data.private_channels.get(str(user.id)) == user.voice.channel.id:
             return user.voice.channel
     return None
+
+async def process_rank(guild, action: str, dept: str, member: Member, log_channel: TextChannel = None):
+    """
+    Универсальная функция для управления рангами.
+    Параметры:
+    - guild: объект сервера
+    - action: "up", "down", "clear"
+    - dept: ключ из DEPARTMENT_ROLES
+    - member: участник
+    - log_channel: канал для вывода результата (если None — ничего не отправлять)
+    """
+
+    cfg = DEPARTMENT_ROLES[dept]
+    dept_role_ids = list(cfg["ranks"].values())
+    roles = [guild.get_role(rid) for rid in dept_role_ids]
+
+    if action == "up":
+        current_roles = [r for r in roles if r in member.roles]
+
+        if not current_roles:
+            new_role = guild.get_role(dept_role_ids[0])
+            await member.add_roles(new_role, reason="Начальное назначение ранга отдела")
+            msg = f"✅ {member.mention} назначен на роль {new_role.name}"
+        else:
+            current_role = max(current_roles, key=lambda r: dept_role_ids.index(r.id))
+            current_index = dept_role_ids.index(current_role.id)
+
+            if current_index + 1 >= len(dept_role_ids):
+                msg = f"✅ {member.mention} уже имеет максимальный ранг {current_role.name}"
+            else:
+                await member.remove_roles(current_role, reason="Повышение ранга")
+                new_role = guild.get_role(dept_role_ids[current_index + 1])
+                await member.add_roles(new_role, reason="Повышение ранга")
+                msg = f"✅ {member.mention} повышен до {new_role.name}"
+
+    elif action == "down":
+        current_roles = [r for r in roles if r in member.roles]
+
+        if not current_roles:
+            msg = f"❌ У {member.mention} нет роли из отдела `{dept}` для понижения."
+        else:
+            current_role = max(current_roles, key=lambda r: dept_role_ids.index(r.id))
+            current_index = dept_role_ids.index(current_role.id)
+
+            if current_index == 0:
+                await member.remove_roles(current_role, reason="Удаление самой низкой роли отдела")
+                msg = f"✅ {member.mention} имел минимальную роль {current_role.name}, она удалена."
+            else:
+                await member.remove_roles(current_role, reason="Понижение ранга")
+                new_role = guild.get_role(dept_role_ids[current_index - 1])
+                await member.add_roles(new_role, reason="Понижение ранга")
+                msg = f"✅ {member.mention} понижен до {new_role.name}"
+
+    else:  # clear
+        await member.remove_roles(*roles, reason="Очистка рангов отдела")
+        msg = f"✅ Все роли отдела `{dept}` удалены у {member.mention}"
+
+    if log_channel:
+        await log_channel.send(msg)
+
+    return msg

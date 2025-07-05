@@ -6,10 +6,8 @@ import asyncio
 import os
 import platform
 import socket
-import sys
 from datetime import datetime
 
-import psutil
 from disnake import AppCommandInteraction, Embed
 
 from bot_init import bot
