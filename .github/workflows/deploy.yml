@@ -29,6 +29,7 @@ jobs:
         run: |
           echo "DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }}" >> $GITHUB_ENV
           echo "GIT_PAT_TOKEN=${{ secrets.GIT_PAT_TOKEN }}" >> $GITHUB_ENV
+          echo "API_KEY_ROBLOX=${{ secrets.API_KEY_ROBLOX }}" >> $GITHUB_ENV
 
       - name: Run bot
         env:
