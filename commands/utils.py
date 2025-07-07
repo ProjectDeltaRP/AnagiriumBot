@@ -66,10 +66,18 @@ async def process_rank(guild, action: str, dept: str, member: Member, log_channe
     - member: участник
     - log_channel: канал для вывода результата (если None — ничего не отправлять)
     """
-
     cfg = DEPARTMENT_ROLES[dept]
     dept_role_ids = list(cfg["ranks"].values())
+    dept_group_role = guild.get_role(cfg["group"])
     roles = [guild.get_role(rid) for rid in dept_role_ids]
+
+    # Вспомогательная функция для обновления групповой роли
+    async def update_group_role():
+        has_dept_role = any(role in member.roles for role in roles)
+        if has_dept_role and dept_group_role not in member.roles:
+            await member.add_roles(dept_group_role, reason="Добавление групповой роли отдела")
+        elif not has_dept_role and dept_group_role in member.roles:
+            await member.remove_roles(dept_group_role, reason="Удаление групповой роли отдела")
 
     if action == "up":
         current_roles = [r for r in roles if r in member.roles]
@@ -111,6 +119,9 @@ async def process_rank(guild, action: str, dept: str, member: Member, log_channe
     else:  # clear
         await member.remove_roles(*roles, reason="Очистка рангов отдела")
         msg = f"✅ Все роли отдела `{dept}` удалены у {member.mention}"
+
+    # Обновляем групповую роль
+    await update_group_role()
 
     if log_channel:
         await log_channel.send(msg)
