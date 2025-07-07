@@ -30,6 +30,9 @@ def get_env_variable(name: str, default: str = "NULL") -> str:
 DISCORD_TOKEN = get_env_variable("DISCORD_TOKEN")
 GIT_PAT_TOKEN = get_env_variable("GIT_PAT_TOKEN")
 API_KEY_ROBLOX = get_env_variable("API_KEY_ROBLOX")
+PRIVATE_KEY_ID_GOOGLE = get_env_variable("PRIVATE_KEY_ID_GOOGLE")
+PRIVATE_KEY_GOOGLE = get_env_variable("PRIVATE_KEY_GOOGLE").replace('\\n', '\n')
+SPREADSHEET_ID_GOOGLE = get_env_variable("SPREADSHEET_ID_GOOGLE")
 
 LOG_TECH_CHANNEL = 1374529148474622085  # ID канала с логами
 BACKUP_CHANNEL_ID = 1374736085929820191 # ID канала для сохранения настроек в случае отключения
@@ -117,4 +120,19 @@ GROUP_COLORS = {
     36048147: disnake.Color.green(),        # Научная служба — фиолетовый
     36048117: disnake.Color.purple(),       # Медицинская служба — синий
     36048024: disnake.Color.yellow(),       # Административная служба — зелёный
+}
+
+# JSON-объект с данными сервисного аккаунта
+SERVICE_ACCOUNT_INFO = {
+  "type": "service_account",
+  "project_id": "deltaproject-465018",
+  "private_key_id": PRIVATE_KEY_ID_GOOGLE,
+  "private_key": PRIVATE_KEY_GOOGLE,
+  "client_email": "table-control@deltaproject-465018.iam.gserviceaccount.com",
+  "client_id": "106683538959980214111",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/table-control%40deltaproject-465018.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
 }

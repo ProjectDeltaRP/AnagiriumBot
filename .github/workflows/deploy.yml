@@ -1,7 +1,7 @@
 name: Deploy Discord AnagariBot
 
 on:
-  schedule:
+  # schedule:
     #Запускать каждые 10 минут
     # - cron: '*/10 * * * *'
 
@@ -30,6 +30,9 @@ jobs:
           echo "DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }}" >> $GITHUB_ENV
           echo "GIT_PAT_TOKEN=${{ secrets.GIT_PAT_TOKEN }}" >> $GITHUB_ENV
           echo "API_KEY_ROBLOX=${{ secrets.API_KEY_ROBLOX }}" >> $GITHUB_ENV
+          echo "PRIVATE_KEY_ID_GOOGLE=${{ secrets.PRIVATE_KEY_ID_GOOGLE }}" >> $GITHUB_ENV
+          echo "PRIVATE_KEY_GOOGLE=${{ secrets.PRIVATE_KEY_GOOGLE }}" >> $GITHUB_ENV
+          echo "SPREADSHEET_ID_GOOGLE=${{ secrets.SPREADSHEET_ID_GOOGLE }}" >> $GITHUB_ENV
 
       - name: Run bot
         env:
