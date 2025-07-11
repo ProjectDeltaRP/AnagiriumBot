@@ -70,3 +70,19 @@ async def players(inter):
     view = PlayersView(data)
     embed = view.get_page_embed()
     await inter.response.send_message(embed=embed, view=view)
+
+@bot.slash_command(description="Получить Roblox профиль по Discord ID")
+async def roblox(inter, discord_id: str):
+    profile = sheet_manager.get_roblox_profile_by_discord_id(discord_id, RANGE_NAME)
+    if profile:
+        await inter.response.send_message(f"Roblox профиль для Discord ID `{discord_id}`: `{profile}`")
+    else:
+        await inter.response.send_message(f"Профиль Roblox для Discord ID `{discord_id}` не найден.")
+
+@bot.slash_command(description="Получить Discord ID по Roblox профилю")
+async def discordid(inter, roblox_profile: str):
+    discord_id = sheet_manager.get_discord_id_by_roblox_profile(roblox_profile, RANGE_NAME)
+    if discord_id:
+        await inter.response.send_message(f"Discord ID для Roblox профиля `{roblox_profile}`: `{discord_id}`")
+    else:
+        await inter.response.send_message(f"Discord ID для Roblox профиля `{roblox_profile}` не найден.")

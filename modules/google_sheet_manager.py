@@ -44,3 +44,17 @@ class GoogleSheetManager:
             row_dict = dict(zip(headers, row_extended))
             result.append(row_dict)
         return result
+
+    def get_roblox_profile_by_discord_id(self, discord_id: str, range_name: str):
+        data = self.get_dicts(range_name)
+        for row in data:
+            if row.get('Дискорд ID') == discord_id:
+                return row.get('Роблокс профиль', None)
+        return None
+
+    def get_discord_id_by_roblox_profile(self, roblox_profile: str, range_name: str):
+        data = self.get_dicts(range_name)
+        for row in data:
+            if row.get('Роблокс профиль') == roblox_profile:
+                return row.get('Дискорд ID', None)
+        return None
