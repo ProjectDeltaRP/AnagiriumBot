@@ -1,37 +1,72 @@
-from google.oauth2 import service_account
-from googleapiclient.discovery import build
+from bot_init import bot, sheet_manager
 
-from bot_init import bot
-from config import SERVICE_ACCOUNT_INFO, SPREADSHEET_ID_GOOGLE
+from disnake.ext import commands
+from disnake import Embed, ui, ButtonStyle
 
-RANGE_NAME = "Игроки (включая администрацию)!B2:C"
+RANGE_NAME = "Игроки (включая администрацию)!A1:H"
 
-# Создаем credentials из словаря
-credentials = service_account.Credentials.from_service_account_info(
-    SERVICE_ACCOUNT_INFO,
-    scopes=['https://www.googleapis.com/auth/spreadsheets.readonly']
-)
+class PlayersView(ui.View):
+    def __init__(self, data, per_page=5):
+        super().__init__(timeout=None)
+        self.data = data
+        self.per_page = per_page
+        self.page = 0
+        self.max_page = (len(data) - 1) // per_page
 
-service = build('sheets', 'v4', credentials=credentials)
-sheet = service.spreadsheets()
+    def get_page_embed(self):
+        embed = Embed(title="Игроки (Discord ID и Роблокс профиль)")
+        start = self.page * self.per_page
+        end = start + self.per_page
+        page_data = self.data[start:end]
+
+        for row in page_data:
+            discord_id = row.get('Дискорд ID', 'Нет данных')
+            roblox_profile = row.get('Роблокс профиль', 'Нет данных')
+            joined_date = row.get('Дата присоединения', 'Нет данных')
+            ac = 'АС' if row.get('АС', '').strip() == '+' else ''
+            ns = 'НС' if row.get('НС', '').strip() == '+' else ''
+            sb = 'СБ' if row.get('СБ', '').strip() == '+' else ''
+            ms = 'МС' if row.get('МС', '').strip() == '+' else ''
+            departments = ', '.join(filter(None, [ac, ns, sb, ms]))
+            if not departments:
+                departments = "Нет отделов"
+
+            embed.add_field(
+                name=f"Discord ID: {discord_id}",
+                value=(
+                    f"Роблокс профиль: {roblox_profile}\n"
+                    f"Дата присоединения: {joined_date}\n"
+                    f"Отделы: {departments}"
+                ),
+                inline=False
+            )
+
+        embed.set_footer(text=f"Страница {self.page + 1} из {self.max_page + 1}")
+        return embed
+
+    @ui.button(label="◀", style=ButtonStyle.secondary)
+    async def prev_page(self, button, inter):
+        if self.page > 0:
+            self.page -= 1
+            await inter.response.edit_message(embed=self.get_page_embed(), view=self)
+        else:
+            await inter.response.defer()
+
+    @ui.button(label="▶", style=ButtonStyle.secondary)
+    async def next_page(self, button, inter):
+        if self.page < self.max_page:
+            self.page += 1
+            await inter.response.edit_message(embed=self.get_page_embed(), view=self)
+        else:
+            await inter.response.defer()
 
 @bot.slash_command(description="Показать таблицу Игроки (Discord ID и Роблокс профиль)")
 async def players(inter):
-    result = sheet.values().get(spreadsheetId=SPREADSHEET_ID_GOOGLE, range=RANGE_NAME).execute()
-    values = result.get('values', [])
-
-    if not values:
+    data = sheet_manager.get_dicts(RANGE_NAME)
+    if not data:
         await inter.response.send_message("Таблица пуста или данные не найдены.")
         return
 
-    msg_lines = []
-    for row in values:
-        discord_id = row[0] if len(row) > 0 else "Нет данных"
-        roblox_profile = row[1] if len(row) > 1 else "Нет данных"
-        msg_lines.append(f"**Discord ID:** {discord_id} — **Роблокс профиль:** {roblox_profile}")
-
-    message = "\n".join(msg_lines)
-    if len(message) > 1900:
-        message = message[:1900] + "\n..."
-
-    await inter.response.send_message(message)
+    view = PlayersView(data)
+    embed = view.get_page_embed()
+    await inter.response.send_message(embed=embed, view=view)

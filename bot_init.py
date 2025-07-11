@@ -5,8 +5,9 @@
 
 import disnake
 from disnake.ext import commands
+from modules.google_sheet_manager import GoogleSheetManager
 
-from config import GUILD_ID
+from config import GUILD_ID, SERVICE_ACCOUNT_INFO, SPREADSHEET_ID_GOOGLE
 
 intents = disnake.Intents.all()
 intents.message_content = True
@@ -22,3 +23,5 @@ bot = commands.Bot(
     sync_commands=True,
     test_guilds=[GUILD_ID]
 )
+
+sheet_manager = GoogleSheetManager(SERVICE_ACCOUNT_INFO, SPREADSHEET_ID_GOOGLE)
