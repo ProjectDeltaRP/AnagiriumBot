@@ -1,7 +1,7 @@
-from bot_init import bot, sheet_manager
-
+from disnake import ButtonStyle, Embed, ui
 from disnake.ext import commands
-from disnake import Embed, ui, ButtonStyle
+
+from bot_init import bot, sheet_manager
 
 RANGE_NAME = "Игроки (включая администрацию)!A1:H"
 

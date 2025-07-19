@@ -5,9 +5,9 @@
 
 import disnake
 from disnake.ext import commands
-from modules.google_sheet_manager import GoogleSheetManager
 
 from config import GUILD_ID, SERVICE_ACCOUNT_INFO, SPREADSHEET_ID_GOOGLE
+from modules.google_sheet_manager import GoogleSheetManager
 
 intents = disnake.Intents.all()
 intents.message_content = True

@@ -1,6 +1,7 @@
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
+
 class GoogleSheetManager:
     def __init__(self, service_account_info: dict, spreadsheet_id: str, scopes=None):
         if scopes is None:
